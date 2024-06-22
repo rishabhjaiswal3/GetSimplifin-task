@@ -6,15 +6,6 @@ class RideSharingApp {
         this.users = [];
         this.vehicles = {};
         this.rides = [];
-        // get_rides() {
-        //   return this.rides;
-        // }
-        // get_users() {
-        //     return this.users;
-        // }
-        // get_vehicles() {
-        //     return this.vehicles;
-        // }
     }
     add_user(_user) {
         const isUserExisted = this.users.filter((user) => (user === null || user === void 0 ? void 0 : user.userId) == (_user === null || _user === void 0 ? void 0 : _user.userId));
@@ -53,12 +44,11 @@ class RideSharingApp {
         }
         return `Failed:: ride with id ${_ride.rideId} not existed with active Status`;
     }
-    find_indirect_route() { }
-    find_direct_route(_startOrigin, _endDestination, _seats, most_vacant = false, preferredVehicle = null) {
+    find_direct_route(_startOrigin, _endDestination, _seats, most_vacant = false, preferredVehicle = null, userId) {
         let possibleOfferRides = input_1._offerRides.filter((offerRide) => {
             if ((offerRide === null || offerRide === void 0 ? void 0 : offerRide.startOrigin) == _startOrigin &&
                 (offerRide === null || offerRide === void 0 ? void 0 : offerRide.endDestination) == _endDestination &&
-                (offerRide === null || offerRide === void 0 ? void 0 : offerRide.availableSeat) >= _seats && (offerRide === null || offerRide === void 0 ? void 0 : offerRide.status) == 1) {
+                (offerRide === null || offerRide === void 0 ? void 0 : offerRide.availableSeat) >= _seats && (offerRide === null || offerRide === void 0 ? void 0 : offerRide.status) == 1 && userId != (offerRide === null || offerRide === void 0 ? void 0 : offerRide.offeredBy)) {
                 return offerRide;
             }
         });
@@ -83,18 +73,44 @@ class RideSharingApp {
         }
         return selectedRide;
     }
+    increase_count(userId, offeredBy) {
+        this.users.forEach((user) => {
+            if (user.userId == userId) {
+                user.rideTaken++;
+            }
+            if (offeredBy && user.userId == offeredBy) {
+                user.rideOffered++;
+            }
+        });
+    }
     select_ride(selectRide) {
+        let { startOrigin, endDestination, seats, most_vacant = false, preferredVehicle = null, userId } = selectRide;
         console.log("\n==========================  START  ===============================\n");
         console.log("::: ", selectRide);
-        let { startOrigin, endDestination, seats, most_vacant = false, preferredVehicle = null } = selectRide;
-        let directRouteRide = this.find_direct_route(startOrigin, endDestination, seats, most_vacant, preferredVehicle);
+        let directRouteRide = this.find_direct_route(startOrigin, endDestination, seats, most_vacant, preferredVehicle, userId);
         if (!directRouteRide) {
-            console.log("\n::: We Found no direct Route\n");
+            console.log("\n::: We found no direct path\n");
             return;
         }
-        console.log("Direct Route is ", directRouteRide);
+        console.log("Direct Path is ", directRouteRide);
         console.log("\n==========================  END  ===============================\n");
+        // increase the count of ride taken and ride offered
+        this.increase_count(userId, directRouteRide === null || directRouteRide === void 0 ? void 0 : directRouteRide.offeredBy);
         return;
+    }
+    print_users() {
+        console.log("=================================== My All Users ==================================");
+        this.users.forEach((user) => {
+            console.log(user === null || user === void 0 ? void 0 : user.name, " Ride Taken :  ", user === null || user === void 0 ? void 0 : user.rideTaken, " , Ride Offered ", user === null || user === void 0 ? void 0 : user.rideOffered);
+        });
+        console.log("=================================== End ==================================");
+    }
+    print_ride_stats() {
+        console.log("=================================== My Rides ==================================");
+        this.rides.forEach((ride) => {
+            console.log(ride);
+        });
+        console.log("================================== End ========================================");
     }
 }
 var ridesApp = new RideSharingApp();
@@ -110,4 +126,6 @@ input_1._offerRides.forEach((offerRide) => {
 input_1._selectRides.forEach(selectRide => {
     ridesApp.select_ride(selectRide);
 });
+ridesApp.print_ride_stats();
+ridesApp.print_users();
 //# sourceMappingURL=index.js.map

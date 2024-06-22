@@ -5,7 +5,7 @@ export const _users = [
         gender: "M",
         age: 36,
         rideOffered: 0,
-        ridesTaken: 0
+        rideTaken: 0
     },
     {
         userId: "user_2",
@@ -13,7 +13,7 @@ export const _users = [
         gender: "M",
         age: 29,
         rideOffered: 0,
-        ridesTaken: 0,
+        rideTaken: 0,
     },
     {
         userId: "user_3",
@@ -21,7 +21,7 @@ export const _users = [
         gender: "F",
         age: 29,
         rideOffered: 0,
-        ridesTaken: 0
+        rideTaken: 0
     },
     {
         userId: "user_4",
@@ -29,7 +29,7 @@ export const _users = [
         gender: "F",
         age: 27,
         rideOffered: 0,
-        ridesTaken: 0
+        rideTaken: 0
     },
     {
         userId: "user_5",
@@ -37,7 +37,7 @@ export const _users = [
         gender: "M",
         age: 29,
         rideOffered: 0,
-        ridesTaken: 0
+        rideTaken: 0
     },
     {
         userId: "user_6",
@@ -45,11 +45,17 @@ export const _users = [
         gender: "M",
         age: 35,
         rideOffered: 0,
-        ridesTaken: 0
+        rideTaken: 0
     }
 ]
 
 export const _vehicles = [
+    {
+        vehicleId: "v_0",
+        ownerId: "user_1",
+        vehicleName: "Swift",
+        plateNumber: "KA-01-12345"
+    },
     {
         vehicleId: "v_1",
         ownerId: "user_2",

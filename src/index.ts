@@ -65,14 +65,15 @@ class RideSharingApp {
     _endDestination,
     _seats,
     most_vacant = false,
-    preferredVehicle = null
+    preferredVehicle = null,
+    userId
   ) {
     
     let possibleOfferRides = _offerRides.filter((offerRide) => {
         if (
           offerRide?.startOrigin == _startOrigin &&
           offerRide?.endDestination == _endDestination &&
-          offerRide?.availableSeat >= _seats && offerRide?.status == 1
+          offerRide?.availableSeat >= _seats && offerRide?.status == 1 && userId != offerRide?.offeredBy
         ) {
          return offerRide;
         }
@@ -98,38 +99,54 @@ class RideSharingApp {
     return selectedRide;
   }
 
-  select_ride(selectRide) {
+  increase_count(userId,offeredBy) {
 
+    this.users.forEach((user) => {
+      if (user.userId == userId) {
+        user.rideTaken++;
+      }
+      if(offeredBy && user.userId == offeredBy) {
+        user.rideOffered++;
+      }
+    })
+
+  }
+
+  select_ride(selectRide) {
+    
+    let { startOrigin, endDestination, seats, most_vacant = false, preferredVehicle = null, userId} = selectRide;  
     console.log("\n==========================  START  ===============================\n")
     console.log("::: ",selectRide)
 
-    let { startOrigin, endDestination, seats, most_vacant = false, preferredVehicle = null} = selectRide;
-
-    let directRouteRide = this.find_direct_route(startOrigin, endDestination,seats, most_vacant, preferredVehicle )
-    
+    let directRouteRide = this.find_direct_route(startOrigin, endDestination,seats, most_vacant, preferredVehicle , userId)
     if(!directRouteRide) {
-        console.log("\n::: We Found no direct Route\n")
+        console.log("\n::: We found no direct path\n")
         return;
     }
-
-
-    console.log("Direct Route is ", directRouteRide)
+    console.log("Direct Path is ", directRouteRide)
     console.log("\n==========================  END  ===============================\n")
+
+    // increase the count of ride taken and ride offered
+    this.increase_count(userId,directRouteRide?.offeredBy)
     return;
   }
 
+  print_users() {
+    console.log("=================================== My All Users ==================================")
+    this.users.forEach((user)=>{
+      console.log(user?.name," Ride Taken :  ",user?.rideTaken," , Ride Offered ",user?.rideOffered);
+    })
+    console.log("=================================== End ==================================")
+  }
 
-  // get_rides() {
-  //   return this.rides;
-  // }
+  print_ride_stats() {
+    console.log("=================================== My Rides ==================================")
+    this.rides.forEach((ride) =>{
+      console.log(ride);
+    })
+    console.log("================================== End ========================================")
+  }
 
-  // get_users() {
-  //     return this.users;
-  // }
-
-  // get_vehicles() {
-  //     return this.vehicles;
-  // }
 }
 
 var ridesApp = new RideSharingApp();
@@ -150,3 +167,7 @@ _offerRides.forEach((offerRide) => {
 _selectRides.forEach(selectRide => {
     ridesApp.select_ride(selectRide);
 })
+
+ridesApp.print_ride_stats()
+
+ridesApp.print_users();
